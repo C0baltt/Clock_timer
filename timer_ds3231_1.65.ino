@@ -198,7 +198,7 @@ void setup () {
 }
 //===============================================================================================================================
 void loop () {
-  for (;;) {
+  for (;;) {//ускоряет переход к следующей итерации
     buttAjust.tick();                  //опрос кнопки для срабатывания
     buttSet.tick();                    //опрос кнопки для срабатывания
     DateTime now = rtc.now();
@@ -210,6 +210,26 @@ void loop () {
       }
       if (timer2_off != 1) {           //проверяет включен ли таймер и если включен вызывает timer2()
         countdownTimer2();
+      }
+      if (now.minute() == 0)//ночной режим -- включает инверсию дисплея
+      {
+        switch (now.hour())
+        {
+        case 22:
+        case 23:
+        case 00:
+        case 01:
+        case 02:
+        case 03:
+        case 04:
+        case 05:
+        case 06:
+        myOLED.invScr(true);
+        break;
+        default:
+        myOLED.invScr(false);
+        break;
+        }
       }
       if (snow == 30){//раз в минуту обновляются показания датчика
         getParametrFromSensors();
@@ -900,9 +920,9 @@ void saveSettings() {//эта функция сохраняет, либо отм
     flagCancel = 1;
     if (i == 0) myOLED.clrScr();
     myOLED.setFont(MediumFontRus);
-    myOLED.invText(i > 20);
+    myOLED.invScr(i > 20);
     myOLED.print(CANCELED, 15, 4);//"ОТМЕНЕНО"
-    myOLED.invText(false);
+    myOLED.invScr(false);
     i++;
     if (i > 40) {
       i = 0;
@@ -921,9 +941,9 @@ void saveSettings() {//эта функция сохраняет, либо отм
       myOLED.clrScr();
     }
     myOLED.setFont(MediumFontRus);
-    myOLED.invText(i > 20);
+    myOLED.invScr(i > 20);
     myOLED.print(SAVED, 10, 4);//"Сохранено"
-    myOLED.invText(false);
+    myOLED.invScr(false);
     i++;
     if (i > 40) {
       i = 0;
